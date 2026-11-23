@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -5,17 +6,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#ffffff">
 
-<link rel="manifest" href="/manifest.json">
-
-<meta name="theme-color" content="#ffffff">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Kedisiplinan">
-
-<link rel="apple-touch-icon" href="/icons/icon-192.png">
-
-
   <title>NewsIral</title>
+
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="NewsIral">
 
   <style>
     * {
@@ -42,26 +41,40 @@
 <body>
 
   <iframe
-    src="https://script.google.com/macros/s/AKfycbzbdMF3BhoDjCAe2tZT-QHt_z6jUyqOHUJWqoT16_OTqCP3TMqqDrI5awUtSPynqHev/exec"
+    id="appFrame"
     allow="clipboard-read; clipboard-write"
     allowfullscreen>
   </iframe>
 
-  
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
-      .then(registration => {
-        console.log('PWA aktif:', registration.scope);
-      })
-      .catch(error => {
-        console.error('PWA gagal:', error);
-      });
-  });
-}
-</script>
+  <script>
+    // URL GAS
+    const GAS_URL =
+      'https://script.google.com/macros/s/AKfycbySdlII2B0dWa1KsIQIK6InDg7WPw-x1kSn4VuUpEv4-9hDoTMS8aw6F7kbmgMkA8oW/exec';
 
+    // Teruskan parameter URL Vercel ke GAS
+    const params = new URLSearchParams(window.location.search);
+
+    const iframeUrl = new URL(GAS_URL);
+
+    params.forEach((value, key) => {
+      iframeUrl.searchParams.set(key, value);
+    });
+
+    document.getElementById('appFrame').src = iframeUrl.toString();
+
+    // Service Worker PWA
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(registration => {
+            console.log('PWA aktif:', registration.scope);
+          })
+          .catch(error => {
+            console.error('PWA gagal:', error);
+          });
+      });
+    }
+  </script>
 
 </body>
 </html>
